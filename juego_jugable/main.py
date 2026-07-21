@@ -5,24 +5,30 @@ Punto de entrada del modo jugable.
 Estados del juego (máquina de estados simple, un string en `estado_actual`):
 
     CONFIG   -- pantalla NES (configuracion_nes.py)
-    JUGANDO  -- rondas de pato + disparo (tablero.py, partida.py, render_juego.py)
-    FIN      -- por ahora solo imprime el resumen en consola; las próximas etapas
-                agregan la ventana de resultados (Tkinter) y los gráficos finales.
+    JUGANDO  -- rondas de pato + disparo (tablero.py, partida.py, render_juego.py, audio.py)
+    FIN      -- pygame se cierra y el control pasa a Tkinter (resultados_tkinter.py)
+                y luego a Matplotlib/Seaborn (graficos.py) -- dos motores de UI
+                distintos no pueden compartir el mismo bucle de eventos, así que
+                se ejecutan en secuencia, no al mismo tiempo.
 """
 import sys
 
+import pandas as pd
 import pygame
 
+import audio
 import configuracion_nes as config_nes
+import graficos
 import logica
 import render_juego
+import resultados_tkinter
 from constantes import (
     ALTO_VENTANA,
     ANCHO_VENTANA,
     FPS,
     NEGRO,
-    RUTA_PATO,
     RUTA_FONDO,
+    RUTA_PATO,
 )
 from partida import Ronda
 from tablero import Tablero
@@ -32,6 +38,7 @@ RECT_TABLERO = pygame.Rect(30, 60, 900, 318)  # área de la ventana donde se dib
 
 def ejecutar():
     pygame.init()
+    audio.inicializar_audio()
     pantalla = pygame.display.set_mode((ANCHO_VENTANA, ALTO_VENTANA))
     pygame.display.set_caption("Duck Hunt -- Modo Jugable")
     reloj = pygame.time.Clock()
@@ -42,7 +49,6 @@ def ejecutar():
     estado_config = config_nes.crear_estado_inicial()
     estado_actual = "CONFIG"
 
-    # Se inicializan cuando termina la configuración (necesitan TAM_GRID)
     tablero = None
     sprite_pato = None
     sprite_splash = None
@@ -79,13 +85,17 @@ def ejecutar():
 
         # --- lógica del estado JUGANDO ---
         if estado_actual == "JUGANDO":
+            estaba_esperando = ronda_actual.estado == Ronda.ESPERANDO_CLIC
             ronda_actual.actualizar()
-            if ronda_actual.estado == Ronda.RESUELTA:
+
+            if estaba_esperando and ronda_actual.estado == Ronda.RESUELTA:
                 registros.append(ronda_actual.registro())
+                (audio.sonido_acierto if ronda_actual.acierto else audio.sonido_fallo)()
+
                 if ronda_actual.numero >= estado_config["disparos"]:
                     estado_actual = "FIN"
                 else:
-                    pygame.time.wait(500)  # una pausa breve para ver el resultado de la ronda
+                    pygame.time.wait(500)  # pausa breve para ver el resultado de la ronda
                     ronda_actual = Ronda(ronda_actual.numero + 1, tablero)
 
         # --- dibujo ---
@@ -111,13 +121,22 @@ def ejecutar():
         if estado_actual == "FIN":
             corriendo = False
 
-    if registros:
-        aciertos = sum(1 for r in registros if r["acierto"])
-        print(f"\nPartida terminada: {len(registros)} disparos, {aciertos} aciertos "
-              f"({100 * aciertos / len(registros):.1f}%).")
-        # Próxima etapa: ventana de resultados en Tkinter + CSV + gráficos.
+    tam_grid_final = estado_config["grid"]
+    nombre_jugador = config_nes.obtener_nombre_actual(estado_config)
+    pygame.quit()  # liberamos ventana y audio de pygame antes de abrir Tkinter
 
-    pygame.quit()
+    if not registros:
+        return  # el jugador cerró la ventana antes de terminar la partida
+
+    estadisticas = logica.calcular_estadisticas(registros, nombre_jugador, tam_grid_final)
+    print(f"\nPartida terminada: {estadisticas['total_disparos']} disparos, "
+          f"{estadisticas['disparos_exitosos']} aciertos ({estadisticas['porcentaje_aciertos']}%).")
+
+    resultados_tkinter.mostrar_resultados(estadisticas)
+
+    graficos.guardar_registro_csv(estadisticas)
+    graficos.graficar_leaderboard(graficos.cargar_historial())
+    graficos.graficar_resultado_partida(pd.DataFrame(registros), estadisticas, tam_grid_final)
 
 
 if __name__ == "__main__":
