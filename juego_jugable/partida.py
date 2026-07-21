@@ -38,17 +38,28 @@ class Ronda:
         return max(0.0, self.tiempo_limite - transcurrido)
 
     def manejar_clic(self, pos_pantalla):
-        """pos_pantalla: coordenadas de pantalla del clic (píxeles de la ventana)."""
+        """
+        pos_pantalla: coordenadas de pantalla del clic (píxeles de la ventana).
+        Devuelve True si este clic fue el que resolvió la ronda ahora mismo -- main.py
+        usa ese aviso directo para saber cuándo registrar el resultado y pasar a la
+        siguiente ronda, en vez de comparar el estado de "antes" contra el de "después"
+        (comparación que se rompía porque el clic se procesa en medio del bucle de
+        eventos, antes de que el resto del loop pudiera notar el cambio).
+        """
         if self.estado != Ronda.ESPERANDO_CLIC:
-            return
+            return False
         celda = self.tablero.celda_en_click(pos_pantalla)
         if celda is None:
-            return  # clic fuera del tablero: no cuenta como intento
+            return False  # clic fuera del tablero: no cuenta como intento
         self._resolver(celda, a_tiempo=True)
+        return True
 
     def actualizar(self):
+        """Devuelve True si el tiempo se acaba de agotar y la ronda quedó resuelta recién."""
         if self.estado == Ronda.ESPERANDO_CLIC and self.tiempo_restante() <= 0:
             self._resolver(posicion_disparo=None, a_tiempo=False)
+            return True
+        return False
 
     def _resolver(self, posicion_disparo, a_tiempo):
         self.posicion_disparo = posicion_disparo

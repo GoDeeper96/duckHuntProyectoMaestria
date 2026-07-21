@@ -57,6 +57,8 @@ def ejecutar():
 
     corriendo = True
     while corriendo:
+        recien_resuelta = False  # ¿la ronda actual se resolvió en ESTA vuelta del bucle?
+
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 corriendo = False
@@ -65,7 +67,8 @@ def ejecutar():
                 config_nes.manejar_evento(estado_config, evento)
 
             elif estado_actual == "JUGANDO" and evento.type == pygame.MOUSEBUTTONDOWN:
-                ronda_actual.manejar_clic(evento.pos)
+                if ronda_actual.manejar_clic(evento.pos):
+                    recien_resuelta = True
 
         # --- transición CONFIG -> JUGANDO ---
         if estado_actual == "CONFIG" and estado_config["confirmado"] and tablero is None:
@@ -85,20 +88,17 @@ def ejecutar():
 
         # --- lógica del estado JUGANDO ---
         if estado_actual == "JUGANDO":
-            estaba_esperando = ronda_actual.estado == Ronda.ESPERANDO_CLIC
-            ronda_actual.actualizar()
+            if ronda_actual.actualizar():  # True si se acaba de agotar el tiempo
+                recien_resuelta = True
 
-            if estaba_esperando and ronda_actual.estado == Ronda.RESUELTA:
+            if recien_resuelta:
                 registros.append(ronda_actual.registro())
                 (audio.sonido_acierto if ronda_actual.acierto else audio.sonido_fallo)()
 
-                if ronda_actual.numero >= estado_config["disparos"]:
-                    estado_actual = "FIN"
-                else:
-                    pygame.time.wait(500)  # pausa breve para ver el resultado de la ronda
-                    ronda_actual = Ronda(ronda_actual.numero + 1, tablero)
-
         # --- dibujo ---
+        # Importante: se dibuja ANTES de reemplazar ronda_actual por la siguiente ronda,
+        # para que el jugador alcance a ver el splash/X del resultado en pantalla (si el
+        # reemplazo pasara antes de este bloque, el resultado nunca llegaría a mostrarse).
         pantalla.fill(NEGRO)
         if estado_actual == "CONFIG":
             config_nes.dibujar(pantalla, estado_config, fuente, fuente_chica)
@@ -117,6 +117,14 @@ def ejecutar():
 
         pygame.display.flip()
         reloj.tick(FPS)
+
+        # --- avanzar a la siguiente ronda (después de haber mostrado el resultado) ---
+        if estado_actual == "JUGANDO" and recien_resuelta:
+            if ronda_actual.numero >= estado_config["disparos"]:
+                estado_actual = "FIN"
+            else:
+                pygame.time.wait(500)  # pausa para que se alcance a ver el resultado ya dibujado
+                ronda_actual = Ronda(ronda_actual.numero + 1, tablero)
 
         if estado_actual == "FIN":
             corriendo = False
