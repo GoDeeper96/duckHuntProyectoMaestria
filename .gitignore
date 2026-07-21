@@ -1,3 +1,4 @@
 .ipynb_checkpoints/
 __pycache__/
 registros_jugadores.csv
+juego_jugable/registros_jugadores_interactivo.csv
