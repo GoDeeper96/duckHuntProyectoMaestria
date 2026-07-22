@@ -121,11 +121,16 @@ python main.py
 2. Cuando aparece el pato, haz clic dentro de su celda antes de que se acabe la barra de tiempo (arriba a la derecha).
 3. Al completar los disparos configurados, se cierra la ventana del juego y se abre una ventana de resultados; al cerrarla, se guarda la partida en el CSV y se muestran los gráficos finales.
 
+## Documentación del proyecto
+
+- **[`INFORME_TECNICO.md`](./INFORME_TECNICO.md) / [`INFORME_TECNICO.pdf`](./INFORME_TECNICO.pdf)** — informe técnico completo: objetivos, arquitectura, funcionalidades, capturas, análisis estadístico y decisiones de diseño.
+- **[`LIBRERIAS.md`](./LIBRERIAS.md)** — por qué se usó cada librería (NumPy, pandas, Matplotlib, Seaborn, Pillow), con ejemplos del código real.
+- **[`docs/GUION_VIDEO.md`](./docs/GUION_VIDEO.md)** — guion para grabar el video de exposición.
+
 ## Pendiente para el equipo
 
 Del enunciado original, esto todavía no está cubierto:
 
-- [ ] Informe técnico en PDF
-- [ ] Capturas de ejecución adicionales para el informe
+- [ ] Completar los nombres del equipo en `INFORME_TECNICO.md`
 - [ ] Exposición en clase
 - [ ] Video corto de demostración (opcional)
