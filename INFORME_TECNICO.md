@@ -122,10 +122,6 @@ Para el cierre generamos los 4 gráficos estadísticos que forman parte de la co
 
 El gráfico de barras y el pie chart muestran lo mismo desde dos ángulos: aciertos contra fallos. El heatmap es el que más cambió respecto a una versión anterior del proyecto: antes solo contaba en qué celdas aparecía el pato, y ahora muestra, celda por celda, cuántos disparos cayeron ahí y si fueron acierto o fallo (anotado como `"A / F"`) — el resultado del juego, no solo dónde eligió aparecer `pato()`. El histograma cuenta lo mismo pero por fila, con aciertos y fallos apilados en la misma barra.
 
-Como la partida quedó guardada en el CSV histórico, también se arma un leaderboard comparando todas las partidas jugadas hasta el momento.
-
-![Leaderboard de partidas registradas](docs/leaderboard.png)
-
 # ALTERNATIVAS DE SOLUCIÓN
 
 Varias partes del proyecto pasaron por más de una versión antes de quedar como están ahora.
