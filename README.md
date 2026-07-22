@@ -13,7 +13,7 @@ Hay dos entregables independientes:
 
 ## 1. El notebook (entregable principal)
 
-- Pantalla de configuración **estilo NES** (▲▼◄► + START) para elegir nombre de jugador, tamaño de grid y número de disparos — sin usar `input()`.
+- Configuración de partida con **3 `input()` validados** (nombre, número de disparos, tamaño de grid): cada uno se vuelve a pedir hasta que el valor sea válido, así que siempre se puede cambiar el número de disparos (ej. 30, 40) o el tamaño del grid — no dependen de que ningún widget se renderice bien en tu entorno.
 - Tablero dividido dinámicamente en una cuadrícula `n x n`. El enunciado pide mostrar el fondo en blanco/negro o escala de grises (no menciona color), así que **el tablero donde realmente se juega usa la versión en grises** (fórmula de luminosidad calculada a mano con NumPy); el color solo aparece como comparación en la Sección 3.
 - `pato()`: aparece en una celda aleatoria (NumPy), con el fondo celeste de su sprite removido por **chroma-key** y pegado sobre el tablero con **mezcla alfa**.
 - `pistola()`: dispara a una celda aleatoria y dibuja una mira vectorial (círculo + cruz) con Matplotlib.
@@ -42,7 +42,6 @@ Hay dos entregables independientes:
 | **Matplotlib** | Dibujo del tablero, la mira, las pantallas de reacción y los gráficos |
 | **Seaborn** | Gráfico de barras, histograma y heatmap de la Sección 9 |
 | **Pillow (PIL)** | Carga, recorte y redimensionado de imágenes/sprites |
-| **ipywidgets** | Botones de la pantalla de configuración estilo NES |
 
 ### Cómo ejecutar el notebook
 
@@ -52,7 +51,7 @@ jupyter notebook DuckHunt_Simulacion.ipynb
 ```
 
 1. Corre las celdas **en orden, de arriba hacia abajo**.
-2. En la **Sección 2** aparecen los botones ▲▼◄► y START: elige el nombre (solo A-Z), el tamaño de grid (3-8) y el número de disparos (5-99), y presiona **START**. Las celdas siguientes dependen de esta configuración.
+2. En la **Sección 2** aparecen 3 preguntas en el cuadro de texto: nombre (solo letras), número de disparos (5-99, Enter = 20) y tamaño de grid (3-8, Enter = 4). Si escribes algo inválido, te lo vuelve a pedir. Las celdas siguientes dependen de esta configuración.
 3. La **Sección 7** (bucle principal) genera varias figuras y un sonido por cada disparo — con 20 disparos por defecto, tarda unos segundos en terminar.
 4. Al final (secciones 8 y 9) se muestra la pantalla de resultados, se guarda la partida en `registros_jugadores.csv`, y se generan los gráficos estadísticos.
 
@@ -90,9 +89,9 @@ juego_jugable/
 │                               grid, aleatoriedad, síntesis de tono, estadísticas
 │                               (mismas fórmulas que el notebook, reimplementadas
 │                               porque un .ipynb no se puede importar como módulo)
-├── configuracion_nes.py    — pantalla NES con flechas REALES del teclado (a diferencia
-│                               del notebook, que usa botones por la limitación de
-│                               Jupyter para capturar teclas físicas)
+├── configuracion_nes.py    — pantalla de configuración con flechas del teclado dentro
+│                               de la ventana de pygame (el notebook usa input() en vez
+│                               de esto, porque un notebook no tiene un game loop propio)
 ├── tablero.py                — fondo en escala de grises + grid; convierte coordenadas
 │                               pantalla <-> celda (el tablero se dibuja escalado)
 ├── partida.py                — la "Ronda": máquina de estados de 2 pasos

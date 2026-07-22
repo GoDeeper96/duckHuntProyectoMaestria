@@ -3,6 +3,5 @@ pandas
 matplotlib
 seaborn
 pillow
-ipywidgets
 notebook
 pygame
