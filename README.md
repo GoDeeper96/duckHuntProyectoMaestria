@@ -17,7 +17,7 @@ Todo el proyecto vive en un único notebook: **[`DuckHunt_Simulacion.ipynb`](./D
 - Validación de impacto: si pato y disparo coinciden → se muestra `ganador.jpeg` (el perro con el pato); si no → `gameover.jpg` (el perro burlándose). Sin texto superpuesto — la imagen ya comunica el resultado.
 - Bucle principal: juega los `N` disparos configurados completos (no se corta en el primer fallo); cada ronda dibuja un solo tablero con el pato y la mira juntos.
 - Pantalla final con el resumen de la partida, y registro en un **CSV histórico** (`registros_jugadores.csv`) que acumula todas las partidas de todos los jugadores.
-- Estadísticas finales dibujadas **sobre el fondo de `gameover.jpg`**, con "GAME OVER" como título: gráfico de barras, pie chart, heatmap de aciertos/fallos por celda, histograma de aciertos/fallos por fila, y un *leaderboard* comparando jugadores.
+- Estadísticas finales con "GAME OVER" como título en texto y el resumen de la partida debajo: gráfico de barras, pie chart, heatmap de aciertos/fallos por celda, histograma de aciertos/fallos por fila, y un *leaderboard* comparando jugadores.
 
 <p align="center">
   <img src="docs/pato_chromakey.png" width="720" alt="Pato y mira dibujados juntos sobre el tablero en escala de grises">
@@ -27,7 +27,7 @@ Todo el proyecto vive en un único notebook: **[`DuckHunt_Simulacion.ipynb`](./D
   <img src="docs/pantalla_gameover.png" width="360" alt="Pantalla al fallar (sin texto)">
 </p>
 <p align="center">
-  <img src="docs/graficos_estadisticos.png" width="720" alt="Gráficos de barras, pie chart, heatmap e histograma sobre el fondo de GAME OVER">
+  <img src="docs/graficos_estadisticos.png" width="720" alt="Gráficos de barras, pie chart, heatmap e histograma bajo el título GAME OVER">
 </p>
 
 ## Librerías usadas
@@ -60,7 +60,7 @@ jupyter notebook DuckHunt_Simulacion.ipynb
 1. Corre las celdas **en orden, de arriba hacia abajo**.
 2. En la **Sección 2** el notebook pide por teclado el nombre del jugador, el número de disparos (5-100) y el tamaño de grid (3-100) — escribí la respuesta en el cuadro de texto que aparece arriba del notebook y presioná Enter. `validar_configuracion()` avisa con un mensaje claro si algún valor queda fuera de rango.
 3. La **Sección 7** (bucle principal) genera dos figuras por disparo (el tablero de la ronda y la pantalla de reacción) — con 20 disparos por defecto, tarda unos segundos en terminar.
-4. Al final (secciones 8 y 9) se muestra la pantalla de resultados, se guarda la partida en `registros_jugadores.csv`, y se generan los gráficos estadísticos sobre el fondo de GAME OVER.
+4. Al final (secciones 8 y 9) se muestra la pantalla de resultados, se guarda la partida en `registros_jugadores.csv`, y se generan los gráficos estadísticos bajo el título GAME OVER.
 
 ## Notas de diseño
 
@@ -68,6 +68,7 @@ jupyter notebook DuckHunt_Simulacion.ipynb
 - **`pato()` y `pistola()` dibujan con `ax.imshow(imagen, extent=[...])`**: Matplotlib compone la transparencia de un PNG automáticamente al dibujarlo como una capa sobre los ejes, así que no hace falta escribir una fórmula de mezcla alfa a mano. `extent` define en qué rectángulo del tablero se dibuja la imagen, calculado para conservar la proporción original del sprite dentro de la celda.
 - **Sin texto sobre las imágenes de reacción**: `ganador.jpeg` y `gameover.jpg` se muestran tal cual, sin "WINNER"/"GAME OVER" superpuesto en cada disparo — la imagen del perro ya comunica el resultado.
 - **El grid puede llegar hasta 100, no se detiene en 8**: `pato()` calcula el tamaño del sprite en función de la celda (`extent_celda()`), así que el pato nunca se sale de su celda sin importar qué tan chica sea. Un grid más fino simula una probabilidad de acierto más baja, más parecida a apuntar con precisión real.
+- **El panel final de gráficos no usa `gameover.jpg` de fondo**: se probó dibujar los 4 gráficos encima de la foto, pero con un heatmap y un histograma con texto en cada celda, la imagen de fondo terminaba estorbando la lectura. Se quedó solo con "GAME OVER" como título en texto y los gráficos sobre fondo blanco.
 
 ## Documentación del proyecto
 

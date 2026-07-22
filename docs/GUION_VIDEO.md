@@ -138,7 +138,7 @@ Duración aproximada si lo leés a ritmo normal: **8-10 minutos**.
 
 [Mostrar la celda markdown de la Sección 9]
 
-> "Para cerrar, generamos los 4 gráficos de ejemplo del enunciado usando pandas, Matplotlib y Seaborn: un gráfico de barras comparando aciertos contra fallos, con el eje en números enteros; un pie chart con la proporción de aciertos; un heatmap mostrando, celda por celda, cuántos disparos fueron acierto y cuántos fallo; y un histograma con esa misma comparación pero por fila de disparo. Los cuatro se dibujan sobre el fondo de gameover.jpg, con 'GAME OVER' como título grande arriba — así el cierre de la partida y el resumen estadístico quedan en una sola pantalla."
+> "Para cerrar, generamos los 4 gráficos de ejemplo del enunciado usando pandas, Matplotlib y Seaborn: un gráfico de barras comparando aciertos contra fallos, con el eje en números enteros; un pie chart con la proporción de aciertos; un heatmap mostrando, celda por celda, cuántos disparos fueron acierto y cuántos fallo; y un histograma con esa misma comparación pero por fila de disparo. Arriba de todo va 'GAME OVER' como título, con el resumen de la partida debajo en texto, y los 4 gráficos sobre fondo blanco — probamos ponerlos sobre la foto de gameover.jpg, pero con tanto gráfico denso encima, sobre todo el heatmap con texto en cada celda, la foto terminaba estorbando más que ayudando."
 
 [Ejecutar la celda, mostrar el panel de 3 gráficos]
 
