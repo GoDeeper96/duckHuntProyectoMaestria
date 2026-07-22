@@ -13,7 +13,7 @@ Hay dos entregables independientes:
 
 ## 1. El notebook (entregable principal)
 
-- Configuración de partida con **3 variables simples** (`NOMBRE_JUGADOR`, `NUM_DISPAROS`, `TAM_GRID`) al principio del notebook, con una función de validación que avisa con un mensaje claro si algún valor no es válido — tal como pide el enunciado ("El valor de n debe ser configurable desde el código").
+- Configuración de partida por teclado: `input()` pide nombre, número de disparos y tamaño de grid (`NUM_DISPAROS`/`TAM_GRID` se convierten con `int()`), y `validar_configuracion()` avisa con un mensaje claro si algún valor no es válido — tal como pide el enunciado ("El valor de n debe ser configurable").
 - Tablero dividido dinámicamente en una cuadrícula `n x n`. El enunciado pide mostrar el fondo en blanco/negro o escala de grises, así que **todo el proyecto usa únicamente escala de grises** (fórmula de luminosidad calculada a mano con NumPy) — no se muestra ni se juega en color.
 - `pato()`: aparece en una celda aleatoria (NumPy) y se dibuja con `ax.imshow(sprite, extent=[...])` — Matplotlib compone la transparencia del PNG automáticamente, así que no hace falta mezclar píxeles a mano. El sprite necesita **chroma-key** porque `pato.png` no trae transparencia real (tiene un fondo celeste sólido "horneado" en el archivo); ese chroma-key se aplicó una sola vez, de antemano (ver "Notas de diseño" abajo).
 - `pistola()`: dispara a una celda aleatoria y marca la celda con un `Rectangle` (borde) + un marcador `"x"` de Matplotlib, en vez de calcular una mira a mano.
@@ -51,7 +51,7 @@ jupyter notebook DuckHunt_Simulacion.ipynb
 ```
 
 1. Corre las celdas **en orden, de arriba hacia abajo**.
-2. En la **Sección 2** están las 3 variables de configuración (`NOMBRE_JUGADOR`, `NUM_DISPAROS`, `TAM_GRID`). Para probar otra partida (ej. 30 o 40 disparos, grid 5x5), edita esos valores directamente en la celda y volvé a correr el notebook desde el principio — `validar_configuracion()` avisa con un mensaje claro si algún valor queda fuera de rango.
+2. En la **Sección 2** el notebook pide por teclado el nombre del jugador, el número de disparos (5-99) y el tamaño de grid (3-8) — escribí la respuesta en el cuadro de texto que aparece arriba del notebook y presioná Enter. `validar_configuracion()` avisa con un mensaje claro si algún valor queda fuera de rango.
 3. La **Sección 7** (bucle principal) genera dos figuras por disparo (el tablero de la ronda y la pantalla de reacción) — con 20 disparos por defecto, tarda unos segundos en terminar.
 4. Al final (secciones 8 y 9) se muestra la pantalla de resultados, se guarda la partida en `registros_jugadores.csv`, y se generan los gráficos estadísticos.
 

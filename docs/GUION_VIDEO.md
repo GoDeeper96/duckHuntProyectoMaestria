@@ -34,13 +34,17 @@ Duración aproximada si lo leés a ritmo normal: **8-10 minutos**.
 
 ## 2. Configuración de la partida
 
-[Ejecutar la celda de configuración (Sección 2)]
+[Ejecutar la celda de configuración (Sección 2) y escribir las respuestas en el cuadro de texto que aparece arriba del notebook]
 
-> "Acá están las tres variables que configuran la partida: el nombre del jugador, el número de disparos, y el tamaño del grid. El enunciado pide explícitamente que el número de disparos sea configurable desde el código — por defecto es 20, pero se puede cambiar a 30, 40, o cualquier valor entre 5 y 99 simplemente editando esta línea."
+> "Acá se piden tres datos por teclado: el nombre del jugador, el número de disparos, y el tamaño del grid. El enunciado pide explícitamente que el número de disparos sea configurable — se puede escribir 20, 30, 40, cualquier valor entre 5 y 99.
+>
+> Como `input()` siempre devuelve texto, el número de disparos y el tamaño de grid se convierten con `int()` antes de poder usarlos en comparaciones."
 
-[Opcional — demostrar la validación: cambiar `NUM_DISPAROS = 200` y volver a correr la celda para mostrar el `ValueError`, después volver a dejarlo en un valor válido y re-ejecutar]
+[Mostrar cómo se ve el cuadro de texto al pedir cada dato, escribir un nombre, un número de disparos y un tamaño de grid válidos]
 
-> "Si pongo un valor fuera de rango, `validar_configuracion()` lo detecta y lanza un error explicando exactamente qué está mal, en vez de dejar que el problema aparezca más adelante en otra celda que no tiene nada que ver con la configuración."
+[Opcional — demostrar la validación: volver a correr la celda y escribir un número de disparos fuera de rango, por ejemplo 200, para mostrar el `ValueError`, después volver a correrla con un valor válido]
+
+> "Si escribo un valor fuera de rango, `validar_configuracion()` lo detecta después de leer los tres datos y lanza un error explicando exactamente qué está mal, en vez de dejar que el problema aparezca más adelante en otra celda que no tiene nada que ver con la configuración."
 
 ---
 
