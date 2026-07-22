@@ -17,7 +17,7 @@ Todo el proyecto vive en un único notebook: **[`DuckHunt_Simulacion.ipynb`](./D
 - Validación de impacto: si pato y disparo coinciden → pantalla **WINNER**; si no → pantalla **GAME OVER**.
 - Bucle principal: juega los `N` disparos configurados completos (no se corta en el primer fallo); cada ronda dibuja un solo tablero con el pato y la mira juntos.
 - Pantalla final con el resumen de la partida, y registro en un **CSV histórico** (`registros_jugadores.csv`) que acumula todas las partidas de todos los jugadores.
-- Estadísticas finales con pandas + Matplotlib + Seaborn: gráfico de barras, pie chart, heatmap de posiciones del pato, y un *leaderboard* comparando jugadores.
+- Estadísticas finales con pandas + Matplotlib + Seaborn: gráfico de barras, pie chart, heatmap de aciertos/fallos por celda, histograma de posiciones del pato, y un *leaderboard* comparando jugadores.
 
 <p align="center">
   <img src="docs/pato_chromakey.png" width="720" alt="Pato y mira dibujados juntos sobre el tablero en escala de grises">
@@ -27,7 +27,7 @@ Todo el proyecto vive en un único notebook: **[`DuckHunt_Simulacion.ipynb`](./D
   <img src="docs/pantalla_gameover.png" width="360" alt="Pantalla GAME OVER">
 </p>
 <p align="center">
-  <img src="docs/graficos_estadisticos.png" width="720" alt="Gráficos de barras, pie chart y heatmap">
+  <img src="docs/graficos_estadisticos.png" width="720" alt="Gráficos de barras, pie chart, heatmap de aciertos/fallos e histograma">
 </p>
 
 ## Librerías usadas
@@ -37,20 +37,28 @@ Todo el proyecto vive en un único notebook: **[`DuckHunt_Simulacion.ipynb`](./D
 | **NumPy** | Posiciones aleatorias, matrices del tablero, conversión a grises, geometría del grid |
 | **pandas** | Registro de cada disparo, resumen estadístico, CSV histórico, leaderboard |
 | **Matplotlib** | Dibujo del tablero, la mira, las pantallas de reacción y los gráficos |
-| **Seaborn** | Gráfico de barras, pie chart y heatmap de la Sección 9 |
+| **Seaborn** | Gráfico de barras, pie chart, heatmap e histograma de la Sección 9 |
 | **Pillow (PIL)** | Carga de imágenes/sprites |
 
 Explicación detallada de por qué se eligió cada una, con ejemplos del código: **[`LIBRERIAS.md`](./LIBRERIAS.md)**.
 
 ## Cómo ejecutarlo
 
+Es un notebook, así que el archivo `.ipynb` **no alcanza solo**: el código carga las imágenes con rutas relativas (`assets/pato_limpio.png`, etc.), por lo que la carpeta `assets/` tiene que estar en el mismo directorio que el notebook.
+
+- **Localmente:** cloná el repositorio completo (no descargues solo el `.ipynb`), así la carpeta `assets/` queda en el lugar correcto:
+
 ```bash
+git clone https://github.com/GoDeeper96/duckHuntProyectoMaestria.git
+cd duckHuntProyectoMaestria
 pip install -r requirements.txt
 jupyter notebook DuckHunt_Simulacion.ipynb
 ```
 
+- **Google Colab (u otro entorno sin el repo clonado):** subí el notebook y también subí la carpeta `assets/` completa (con sus 4 imágenes) al mismo espacio de trabajo, manteniendo el nombre `assets/`. Si falta, `verificar_assets()` (Sección 1) lo detecta enseguida con un mensaje claro.
+
 1. Corre las celdas **en orden, de arriba hacia abajo**.
-2. En la **Sección 2** el notebook pide por teclado el nombre del jugador, el número de disparos (5-99) y el tamaño de grid (3-8) — escribí la respuesta en el cuadro de texto que aparece arriba del notebook y presioná Enter. `validar_configuracion()` avisa con un mensaje claro si algún valor queda fuera de rango.
+2. En la **Sección 2** el notebook pide por teclado el nombre del jugador, el número de disparos (5-100) y el tamaño de grid (3-100) — escribí la respuesta en el cuadro de texto que aparece arriba del notebook y presioná Enter. `validar_configuracion()` avisa con un mensaje claro si algún valor queda fuera de rango.
 3. La **Sección 7** (bucle principal) genera dos figuras por disparo (el tablero de la ronda y la pantalla de reacción) — con 20 disparos por defecto, tarda unos segundos en terminar.
 4. Al final (secciones 8 y 9) se muestra la pantalla de resultados, se guarda la partida en `registros_jugadores.csv`, y se generan los gráficos estadísticos.
 

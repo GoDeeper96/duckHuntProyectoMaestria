@@ -15,7 +15,7 @@ NumPy es el corazón matemático del proyecto. Lo usamos para todo lo que implic
 - **Conversión a escala de grises** (`convertir_a_grises`): una imagen a color es una matriz `(alto, ancho, 3)`. Con `np.dot(imagen[..., :3], [0.299, 0.587, 0.114])` aplicamos la fórmula de luminosidad a **todos los píxeles a la vez**, sin escribir un bucle `for` que recorra la imagen píxel por píxel. Esto es exactamente la clase de operación para la que NumPy existe: reemplazar bucles explícitos por operaciones vectorizadas sobre arreglos completos.
 - **Generación de la cuadrícula** (`construir_bordes_grid`): `np.linspace(0, ancho, columnas + 1)` calcula de una sola vez los límites en píxeles de cada columna del grid, en vez de calcularlos uno por uno con aritmética manual.
 - **Aleatoriedad** (`generar_posicion_aleatoria`): `np.random.randint(0, filas)` es la fuente de azar que usan tanto `pato()` como `pistola()` para elegir una celda — es el requisito de "generación de números aleatorios" del enunciado, aplicado directamente a la lógica del juego.
-- **La matriz de frecuencia del heatmap** (`construir_matriz_frecuencia_pato`): un arreglo `TAM_GRID x TAM_GRID` de ceros que se va incrementando con `np.add.at(matriz, (filas, columnas), 1)` — la misma idea de "una matriz que representa el tablero" que se usó para el fondo, ahora usada para contar apariciones del pato.
+- **Las matrices del heatmap** (`construir_matrices_resultado`): dos arreglos `TAM_GRID x TAM_GRID` de ceros (uno para aciertos, otro para fallos) que se van incrementando con `np.add.at(matriz, (filas, columnas), 1)` — la misma idea de "una matriz que representa el tablero" que se usó para el fondo, ahora usada para contar resultados por celda.
 
 **Por qué esta y no otra:** no hay alternativa razonable — es la librería estándar de Python para álgebra matricial y arreglos numéricos, y es la que pide el enunciado explícitamente para "manejo de matrices, cuadrículas y números aleatorios".
 
@@ -58,7 +58,8 @@ Seaborn se usa exclusivamente en la Sección 9, para los gráficos de cierre del
 
 - **Gráfico de barras** (`graficar_barras_resultado`): `sns.barplot(...)` compara la cantidad de aciertos contra fallos.
 - **Pie chart** (`graficar_pie_resultado`): en este caso usamos `ax.pie` de Matplotlib directamente, porque Seaborn no tiene una función de pie chart propia — es un ejemplo real de cuándo conviene usar cada librería según lo que hace falta, no usar una por usarla.
-- **Heatmap** (`graficar_heatmap_posiciones`): `sns.heatmap(matriz_frecuencia, annot=True, cmap="Reds")` colorea la matriz de frecuencia del pato por celda, con el número superpuesto en cada casilla — hacer esto mismo a mano con Matplotlib puro pediría mucho más código (normalizar colores, dibujar cada celda, poner cada número).
+- **Heatmap** (`graficar_heatmap_resultado`): `sns.heatmap(total, annot=etiquetas, cmap="Reds")` colorea cada celda del grid según cuántos disparos cayeron ahí, con una etiqueta de texto tipo `"1A / 2F"` (aciertos/fallos) superpuesta en cada casilla — hacer esto mismo a mano con Matplotlib puro pediría mucho más código (normalizar colores, dibujar cada celda, poner cada etiqueta).
+- **Histograma** (`graficar_histograma_filas`): `sns.histplot(df_partida["pato_fila"], bins=..., discrete=True)` cuenta en cuántos disparos el pato apareció en cada fila del grid — una línea, en vez de armar el conteo y las barras a mano.
 - **Leaderboard** (`mostrar_leaderboard`): otro `sns.barplot`, esta vez comparando el % de aciertos de todas las partidas guardadas en el CSV histórico.
 
 **Por qué esta y no otra:** el enunciado la pide explícitamente para "elaboración de gráficos estadísticos finales", y en la práctica ahorra código real en el heatmap y en las barras en comparación con hacerlo todo con Matplotlib puro.
@@ -84,5 +85,5 @@ Pillow es una librería de apoyo (no está en la lista obligatoria del enunciado
 | **NumPy** | Todo lo que es matriz, cuadrícula o número aleatorio |
 | **pandas** | Todo lo que es tabla, registro o estadística resumida |
 | **Matplotlib** | Todo lo que se dibuja en pantalla: tablero, sprites, texto |
-| **Seaborn** | Los gráficos estadísticos de cierre (barras, pie, heatmap) |
+| **Seaborn** | Los gráficos estadísticos de cierre (barras, pie, heatmap, histograma) |
 | **Pillow** | Puente entre un archivo de imagen en disco y una matriz de NumPy |

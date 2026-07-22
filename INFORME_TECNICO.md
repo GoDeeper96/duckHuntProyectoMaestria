@@ -93,13 +93,13 @@ Al terminar la partida, la lista de registros se convierte en una tabla de panda
 Repasando contra el enunciado original, punto por punto:
 
 - [x] Fondo del juego dibujado y mostrado en escala de grises.
-- [x] Cuadrícula generada dinámicamente (`3×3`, `4×4`, `5×5`, o cualquier `n×n` entre 3 y 8) usando estructuras matriciales.
+- [x] Cuadrícula generada dinámicamente (`3×3`, `4×4`, `5×5`, o cualquier `n×n` entre 3 y 100) usando estructuras matriciales.
 - [x] Función `pato()`: posición aleatoria con NumPy, dibujo del sprite.
 - [x] Función `pistola()`: posición de impacto aleatoria con NumPy, mira dibujada.
 - [x] Validación de impacto: imagen de acierto (WINNER) y de fallo (GAME OVER), con registro de cada resultado.
-- [x] Sistema de disparos configurable (`n = 20` por defecto, ajustable desde el teclado al iniciar).
+- [x] Sistema de disparos configurable (`n = 20` por defecto, ajustable desde el teclado entre 5 y 100).
 - [x] Pantalla final con estadísticas: total, exitosos, errados, % de aciertos, % de fallos.
-- [x] Visualización estadística con tablas y gráficos (barras, pie chart, heatmap), usando pandas, Matplotlib y Seaborn.
+- [x] Visualización estadística con tablas y los 4 gráficos de ejemplo (barras, histograma, pie chart, heatmap), usando pandas, Matplotlib y Seaborn.
 
 ## 5. Librerías utilizadas
 
@@ -112,16 +112,21 @@ Como resumen rápido:
 | NumPy | Matrices, cuadrículas, conversión a grises, aleatoriedad |
 | pandas | Registro de disparos, resumen estadístico, CSV histórico |
 | Matplotlib | Todo el dibujo: tablero, sprites, texto, pantallas |
-| Seaborn | Gráficos estadísticos finales (barras, heatmap, leaderboard) |
+| Seaborn | Gráficos estadísticos finales (barras, histograma, heatmap, leaderboard) |
 | Pillow | Carga de imágenes desde disco |
 
 ## 6. Análisis estadístico de resultados
 
-Para este informe se jugó una partida de ejemplo con la configuración por defecto: grid `4×4` y `20` disparos. El resultado fue **1 acierto de 20 disparos (5%)** — un resultado bajo, pero esperable: con 16 celdas posibles y una posición de disparo totalmente independiente de la del pato, la probabilidad de acertar cada disparo por puro azar es `1/16 ≈ 6.25%`, así que sobre 20 intentos lo más probable estadísticamente es acertar entre 1 y 2 veces. Esto es, en sí mismo, una observación interesante del proyecto: como ambas posiciones son aleatorias e independientes, el juego no mide puntería sino que ilustra un experimento de probabilidad — cada partida es, en el fondo, una simulación de Monte Carlo con muy pocas repeticiones.
+Para este informe se jugó una partida de ejemplo con la configuración por defecto: grid `4×4` y `20` disparos. El resultado fue **3 aciertos de 20 disparos (15%)** — un resultado bajo, pero esperable: con 16 celdas posibles y una posición de disparo totalmente independiente de la del pato, la probabilidad de acertar cada disparo por puro azar es `1/16`, aproximadamente 6.25%, así que sobre 20 intentos lo más probable estadísticamente es acertar entre 1 y 2 veces (3 está apenas por encima de lo esperado, dentro de lo normal para una muestra tan chica). Esto es, en sí mismo, una observación interesante del proyecto: como ambas posiciones son aleatorias e independientes, el juego no mide puntería sino que ilustra un experimento de probabilidad — cada partida es, en el fondo, una simulación de Monte Carlo con muy pocas repeticiones.
 
-![Gráfico de barras, pie chart y heatmap de la partida de ejemplo](docs/graficos_estadisticos.png)
+![Gráfico de barras, pie chart, heatmap e histograma de la partida de ejemplo](docs/graficos_estadisticos.png)
 
-El **gráfico de barras** y el **pie chart** muestran lo mismo desde dos ángulos: la proporción de aciertos frente a fallos. El **heatmap** es el más interesante desde el punto de vista de matrices: cuenta cuántas veces apareció el pato en cada celda del grid a lo largo de la partida — con más partidas jugadas, ese mapa de calor debería acercarse a una distribución uniforme, porque `pato()` elige la celda con `np.random.randint`, que da la misma probabilidad a cada celda.
+Los 4 gráficos, en el orden en que aparecen:
+
+- **Gráfico de barras** (arriba, izquierda): cantidad de aciertos vs. fallos, con el eje vertical forzado a números enteros — no tiene sentido mostrar "2.5 disparos", así que se usa `MaxNLocator(integer=True)` de Matplotlib en vez de dejar que el eje se autoescale con decimales.
+- **Pie chart** (arriba, derecha): la misma comparación de aciertos/fallos, en proporción.
+- **Heatmap** (abajo, izquierda): por cada celda del grid, cuántos disparos cayeron ahí y si fueron acierto o fallo (anotado como `"A / F"` en cada celda, con el color representando el total de disparos en esa celda). Se cambió respecto a una versión anterior que solo mostraba dónde aparecía el pato — mostrar el **resultado** del disparo por celda es más relevante para analizar la partida que solo la aleatoriedad de `pato()`.
+- **Histograma** (abajo, derecha): en qué fila del grid apareció el pato con más frecuencia. Con más partidas jugadas, esta distribución debería acercarse a ser uniforme entre las filas, porque `pato()` elige la posición con `np.random.randint`, que da la misma probabilidad a cada celda.
 
 Como la partida quedó guardada en el CSV histórico, la Sección 9 también arma un **leaderboard** comparando todas las partidas jugadas hasta el momento, ordenadas por porcentaje de aciertos — pensado para cuando distintos integrantes del equipo (o distintos compañeros del curso) prueben el notebook varias veces.
 
@@ -135,6 +140,7 @@ Algunas decisiones no son obvias mirando solo el código final, así que vale la
 - **`pato()` y `pistola()` simplificadas con `imshow(extent=...)`**: una versión anterior mezclaba los píxeles del sprite a mano con una fórmula de composición alfa; se simplificó dejando que Matplotlib haga esa composición automáticamente, que es lo que la librería ya hace bien.
 - **Sin splash de sangre ni sonido**: se consideraron en una etapa intermedia del desarrollo, pero se descartaron para mantener la lógica de validación de impacto simple y fácil de explicar — las pantallas WINNER/GAME OVER ya cumplen esa función.
 - **Configuración por teclado, no por una pantalla interactiva de botones**: se probó una pantalla de configuración estilo consola retro con botones (`ipywidgets`), pero depende de que el entorno donde corre el notebook tenga el renderizador de widgets bien configurado. `input()` es una función estándar de Python que funciona igual en cualquier notebook, así que fue la opción más confiable para algo tan central como la configuración inicial.
+- **El grid puede llegar hasta 100, no se detiene en 8**: no hay ninguna razón técnica para limitar el tamaño del tablero. `pato()` calcula el tamaño del sprite en función del tamaño de la celda (`extent_celda()`, Sección 4), así que el pato nunca se sale de su celda sin importar qué tan chica sea — la única restricción real es que el pato no puede ser más grande que la celda que lo contiene, y eso ya lo garantiza ese cálculo. Un grid más fino simula una cadena de disparos más realista (probabilidad de acierto más baja, más parecida a apuntar con precisión de verdad).
 
 ## 8. Conclusiones
 
@@ -142,9 +148,17 @@ El proyecto cumple con los cuatro pilares que pedía el enunciado: manipulación
 
 ## 9. Cómo ejecutar el proyecto
 
+Como el proyecto es un notebook (`.ipynb`), lo importante es no separarlo de sus recursos: el código carga las imágenes con rutas relativas (`assets/pato_limpio.png`, `assets/gameover.jpg`, etc.), así que la carpeta `assets/` tiene que estar **en el mismo directorio que el notebook**, con ese nombre exacto. `verificar_assets()` (Sección 1) revisa esto apenas se ejecuta la primera celda de código, y si falta algún archivo, el programa se detiene ahí mismo con un mensaje claro en vez de fallar más adelante.
+
+**Localmente (Jupyter / VS Code):** cloná el repositorio completo — no alcanza con descargar solo el archivo `.ipynb` — para que la carpeta `assets/` venga incluida junto al notebook:
+
 ```bash
+git clone https://github.com/GoDeeper96/duckHuntProyectoMaestria.git
+cd duckHuntProyectoMaestria
 pip install -r requirements.txt
 jupyter notebook DuckHunt_Simulacion.ipynb
 ```
 
-Correr las celdas en orden, de arriba hacia abajo; la Sección 2 va a pedir el nombre del jugador, el número de disparos y el tamaño del grid por teclado. Instrucciones más detalladas y capturas adicionales están documentadas en el [`README.md`](./README.md) del repositorio.
+**Google Colab (o cualquier entorno sin el repositorio clonado):** subí el notebook y, además, subí la carpeta `assets/` completa (con sus 4 imágenes) al mismo espacio de trabajo, manteniendo el nombre `assets/` — por ejemplo, arrastrando la carpeta al panel de archivos de la izquierda.
+
+Una vez que el notebook y la carpeta `assets/` están juntos, correr las celdas en orden, de arriba hacia abajo; la Sección 2 va a pedir el nombre del jugador, el número de disparos y el tamaño del grid por teclado. Instrucciones más detalladas y capturas adicionales están documentadas en el [`README.md`](./README.md) del repositorio.

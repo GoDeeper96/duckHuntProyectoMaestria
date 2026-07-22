@@ -138,7 +138,7 @@ Duración aproximada si lo leés a ritmo normal: **8-10 minutos**.
 
 [Mostrar la celda markdown de la Sección 9]
 
-> "Para cerrar, generamos gráficos estadísticos usando pandas, Matplotlib y Seaborn: un gráfico de barras comparando aciertos contra fallos, un pie chart con la proporción de aciertos, y un heatmap mostrando en qué celdas del grid apareció el pato con más frecuencia — reutilizando la misma matriz de conteo por celda que ya usamos para el grid."
+> "Para cerrar, generamos los 4 gráficos de ejemplo del enunciado usando pandas, Matplotlib y Seaborn: un gráfico de barras comparando aciertos contra fallos, con el eje en números enteros; un pie chart con la proporción de aciertos; un heatmap mostrando, celda por celda, cuántos disparos fueron acierto y cuántos fallo; y un histograma con en qué fila del grid apareció el pato con más frecuencia."
 
 [Ejecutar la celda, mostrar el panel de 3 gráficos]
 
