@@ -13,17 +13,17 @@ Hay dos entregables independientes:
 
 ## 1. El notebook (entregable principal)
 
-- Configuración de partida con **3 `input()` validados** (nombre, número de disparos, tamaño de grid): cada uno se vuelve a pedir hasta que el valor sea válido, así que siempre se puede cambiar el número de disparos (ej. 30, 40) o el tamaño del grid — no dependen de que ningún widget se renderice bien en tu entorno.
+- Configuración de partida con **3 variables simples** (`NOMBRE_JUGADOR`, `NUM_DISPAROS`, `TAM_GRID`) al principio del notebook, con una función de validación que avisa con un mensaje claro si algún valor no es válido — tal como pide el enunciado ("El valor de n debe ser configurable desde el código").
 - Tablero dividido dinámicamente en una cuadrícula `n x n`. El enunciado pide mostrar el fondo en blanco/negro o escala de grises (no menciona color), así que **el tablero donde realmente se juega usa la versión en grises** (fórmula de luminosidad calculada a mano con NumPy); el color solo aparece como comparación en la Sección 3.
-- `pato()`: aparece en una celda aleatoria (NumPy), con el fondo celeste de su sprite removido por **chroma-key** y pegado sobre el tablero con **mezcla alfa**.
-- `pistola()`: dispara a una celda aleatoria y dibuja una mira vectorial (círculo + cruz) con Matplotlib.
-- Validación de impacto: si pato y disparo coinciden → splash de sangre + pantalla **WINNER** + tono agudo sintetizado; si no → pantalla **GAME OVER** + tono grave.
-- Bucle principal: juega los `N` disparos configurados completos (no se corta en el primer fallo).
+- `pato()`: aparece en una celda aleatoria (NumPy) y se dibuja con `ax.imshow(sprite, extent=[...])` — Matplotlib compone la transparencia del PNG automáticamente, así que no hace falta mezclar píxeles a mano. El sprite sigue necesitando **chroma-key** porque `pato.png` no trae transparencia real (tiene un fondo celeste sólido "horneado" en el archivo).
+- `pistola()`: dispara a una celda aleatoria y marca la celda con un `Rectangle` (borde) + un marcador `"x"` de Matplotlib, en vez de calcular una mira a mano.
+- Validación de impacto: si pato y disparo coinciden → splash de sangre + pantalla **WINNER**; si no → pantalla **GAME OVER**.
+- Bucle principal: juega los `N` disparos configurados completos (no se corta en el primer fallo); cada ronda dibuja un solo tablero con el pato, la mira y (si hubo acierto) el splash juntos.
 - Pantalla final con el resumen de la partida, y registro en un **CSV histórico** (`registros_jugadores.csv`) que acumula todas las partidas de todos los jugadores.
 - Estadísticas finales con pandas + Matplotlib + Seaborn: gráfico de barras, histograma, pie chart, heatmap de posiciones del pato, y un *leaderboard* comparando jugadores.
 
 <p align="center">
-  <img src="docs/pato_chromakey.png" width="720" alt="Pato pegado sobre el tablero en escala de grises">
+  <img src="docs/pato_chromakey.png" width="720" alt="Pato y mira dibujados juntos sobre el tablero en escala de grises">
 </p>
 <p align="center">
   <img src="docs/pantalla_winner.png" width="360" alt="Pantalla WINNER"> &nbsp;
@@ -37,7 +37,7 @@ Hay dos entregables independientes:
 
 | Librería | Para qué se usa aquí |
 |---|---|
-| **NumPy** | Posiciones aleatorias, matrices del tablero, conversión a grises/B-N, chroma-key, mezcla alfa, splash de sangre, síntesis de audio |
+| **NumPy** | Posiciones aleatorias, matrices del tablero, conversión a grises/B-N, chroma-key, splash de sangre |
 | **pandas** | Registro de cada disparo, resumen estadístico, CSV histórico, leaderboard |
 | **Matplotlib** | Dibujo del tablero, la mira, las pantallas de reacción y los gráficos |
 | **Seaborn** | Gráfico de barras, histograma y heatmap de la Sección 9 |
@@ -51,15 +51,16 @@ jupyter notebook DuckHunt_Simulacion.ipynb
 ```
 
 1. Corre las celdas **en orden, de arriba hacia abajo**.
-2. En la **Sección 2** aparecen 3 preguntas en el cuadro de texto: nombre (solo letras), número de disparos (5-99, Enter = 20) y tamaño de grid (3-8, Enter = 4). Si escribes algo inválido, te lo vuelve a pedir. Las celdas siguientes dependen de esta configuración.
-3. La **Sección 7** (bucle principal) genera varias figuras y un sonido por cada disparo — con 20 disparos por defecto, tarda unos segundos en terminar.
+2. En la **Sección 2** están las 3 variables de configuración (`NOMBRE_JUGADOR`, `NUM_DISPAROS`, `TAM_GRID`). Para probar otra partida (ej. 30 o 40 disparos, grid 5x5), edita esos valores directamente en la celda y volvé a correr el notebook desde el principio — `validar_configuracion()` avisa con un mensaje claro si algún valor queda fuera de rango.
+3. La **Sección 7** (bucle principal) genera dos figuras por disparo (el tablero de la ronda y la pantalla de reacción) — con 20 disparos por defecto, tarda unos segundos en terminar.
 4. Al final (secciones 8 y 9) se muestra la pantalla de resultados, se guarda la partida en `registros_jugadores.csv`, y se generan los gráficos estadísticos.
 
 ### Notas de diseño del notebook
 
 - **`pato (1).png` no tenía transparencia real** — tenía un fondo celeste sólido "horneado" en el archivo. Se detectó inspeccionando el canal alfa con NumPy y se resolvió con una función de *chroma-key*.
-- El **splash de sangre** y la **mira del disparo** se generan por código (círculos con NumPy), no son imágenes — mismo criterio de "manipulación de imágenes" con fórmulas explícitas en vez de funciones de conveniencia de una librería.
-- El **audio** (aciertos/fallos) se sintetiza con ondas senoidales de NumPy (`IPython.display.Audio`), porque no había archivos de sonido en el proyecto.
+- **`pato()` y `pistola()` dibujan con `ax.imshow(imagen, extent=[...])`**: Matplotlib compone la transparencia de un PNG automáticamente al dibujarlo como una capa sobre los ejes, así que no hace falta escribir una fórmula de mezcla alfa a mano. `extent` define en qué rectángulo del tablero se dibuja la imagen, calculado para conservar la proporción original del sprite dentro de la celda.
+- El **splash de sangre** se genera por código (círculos con NumPy sobre una textura transparente), no es una imagen — mismo criterio de "manipulación de imágenes" con fórmulas explícitas en vez de una imagen fija.
+- Sin audio: se sacó del notebook para mantener `pato()`/`pistola()`/la validación de impacto simples y enfocadas. El modo jugable (`juego_jugable/`) sí lo conserva.
 
 ## 2. El modo jugable (`juego_jugable/`, extra)
 
