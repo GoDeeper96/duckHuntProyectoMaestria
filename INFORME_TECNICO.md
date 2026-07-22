@@ -118,6 +118,8 @@ Con la lista de resultados armamos una tabla de pandas y calculamos el resumen (
 
 Para el cierre generamos los 4 gráficos estadísticos que forman parte de la consigna. Jugamos una partida de ejemplo con la configuración por defecto (grid `4×4`, 20 disparos) y el resultado fue **2 aciertos de 20 (10%)**. Tiene sentido: con 16 celdas y una posición de disparo totalmente independiente de la del pato, la probabilidad de acertar cada disparo por azar es de `1/16`, más o menos 6.25%, así que sobre 20 intentos lo esperable es acertar 1 o 2 veces. El juego, en el fondo, no mide puntería —mide qué tan seguido coinciden dos números aleatorios— y cada partida termina siendo un experimento de probabilidad con pocas repeticiones.
 
+Esa probabilidad no baja en proporción directa al tamaño del grid, baja al cuadrado: en un `N×N` hay `N²` celdas, y como el pato y el disparo se ubican por separado, la chance de que coincidan es `1/N²`. Pasar de 4×4 a 8×8 no duplica la dificultad, la multiplica por cuatro (de 6.25% a 1.56%); en un grid de 10×10 ya baja a 1%. Con 20 disparos es razonable ver 1 o 2 aciertos en un grid chico, pero en uno grande lo más probable es no acertar ninguno.
+
 ![Gráficos de la partida de ejemplo](docs/graficos_estadisticos.png)
 
 El gráfico de barras y el pie chart muestran lo mismo desde dos ángulos: aciertos contra fallos. El heatmap es el que más cambió respecto a una versión anterior del proyecto: antes solo contaba en qué celdas aparecía el pato, y ahora muestra, celda por celda, cuántos disparos cayeron ahí y si fueron acierto o fallo (anotado como `"A / F"`) — el resultado del juego, no solo dónde eligió aparecer `pato()`. El histograma cuenta lo mismo pero por fila, con aciertos y fallos apilados en la misma barra.
