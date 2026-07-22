@@ -20,7 +20,7 @@ Este informe documenta el desarrollo de una simulación del clásico videojuego 
 
 Detrás de esa idea simple está el objetivo real del curso: practicar programación estructurada y modular, manejo de matrices e imágenes, generación de números aleatorios, y estadística básica, usando cuatro librerías de ciencia de datos que son estándar en cualquier flujo de trabajo con Python: **NumPy**, **pandas**, **Matplotlib** y **Seaborn**.
 
-Todo el proyecto vive en un único notebook, [`DuckHunt_Simulacion.ipynb`](./DuckHunt_Simulacion.ipynb), organizado en 9 secciones que se ejecutan de arriba hacia abajo. Como extra fuera de lo pedido por el enunciado, el equipo también construyó una versión jugable de verdad con `pygame` (carpeta `juego_jugable/`), donde el disparo no es aleatorio sino que depende de un clic real del jugador — se documenta brevemente en la Sección 8 de este informe, pero no reemplaza al notebook como entregable principal.
+Todo el proyecto vive en un único notebook, [`DuckHunt_Simulacion.ipynb`](./DuckHunt_Simulacion.ipynb), organizado en 9 secciones que se ejecutan de arriba hacia abajo.
 
 ## 2. Objetivos
 
@@ -136,21 +136,15 @@ Algunas decisiones no son obvias mirando solo el código final, así que vale la
 - **Sin splash de sangre ni sonido**: se consideraron en una etapa intermedia del desarrollo, pero se descartaron para mantener la lógica de validación de impacto simple y fácil de explicar — las pantallas WINNER/GAME OVER ya cumplen esa función.
 - **Configuración por teclado, no por una pantalla interactiva de botones**: se probó una pantalla de configuración estilo consola retro con botones (`ipywidgets`), pero depende de que el entorno donde corre el notebook tenga el renderizador de widgets bien configurado. `input()` es una función estándar de Python que funciona igual en cualquier notebook, así que fue la opción más confiable para algo tan central como la configuración inicial.
 
-## 8. Extra: modo jugable con pygame
-
-Como el enunciado permite usar librerías opcionales, el equipo construyó además una versión jugable de verdad (carpeta `juego_jugable/`), donde el jugador apunta y hace clic con el mouse en vez de que el disparo sea aleatorio. Usa el mismo tablero en escala de grises y la misma idea de "celda del grid", pero agrega un temporizador por ronda y una colisión real basada en dónde cae el clic. No reemplaza al notebook como entregable — mide una habilidad distinta (reacción y puntería real) en vez de una simulación puramente aleatoria — pero sirve como demostración adicional de lo aprendido.
-
-![Modo jugable: tablero con pato, HUD y barra de tiempo](docs/juego_jugable_tablero.png)
-
-## 9. Conclusiones
+## 8. Conclusiones
 
 El proyecto cumple con los cuatro pilares que pedía el enunciado: manipulación de matrices y arreglos con NumPy, gestión de datos estadísticos con pandas, creación de gráficos con Matplotlib y Seaborn, y una simulación computacional simple armada con funciones pequeñas y bien separadas por responsabilidad. Más allá de cumplir la consigna, el proceso de simplificar el código en varias iteraciones —sacando la composición alfa manual, el sonido, el splash de sangre— fue en sí mismo una lección práctica: la primera versión que funciona no siempre es la versión más fácil de explicar, y vale la pena revisar el código con esa pregunta en mente.
 
-## 10. Cómo ejecutar el proyecto
+## 9. Cómo ejecutar el proyecto
 
 ```bash
 pip install -r requirements.txt
 jupyter notebook DuckHunt_Simulacion.ipynb
 ```
 
-Correr las celdas en orden, de arriba hacia abajo; la Sección 2 va a pedir el nombre del jugador, el número de disparos y el tamaño del grid por teclado. Instrucciones más detalladas, capturas adicionales, y la versión jugable con pygame están documentadas en el [`README.md`](./README.md) del repositorio.
+Correr las celdas en orden, de arriba hacia abajo; la Sección 2 va a pedir el nombre del jugador, el número de disparos y el tamaño del grid por teclado. Instrucciones más detalladas y capturas adicionales están documentadas en el [`README.md`](./README.md) del repositorio.

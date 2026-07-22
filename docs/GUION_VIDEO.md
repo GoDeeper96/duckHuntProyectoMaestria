@@ -161,4 +161,3 @@ Duración aproximada si lo leés a ritmo normal: **8-10 minutos**.
 - Si algo sale distinto en pantalla porque el pato/disparo son aleatorios, no importa — la explicación sigue siendo válida, solo cambian las celdas exactas.
 - Si querés acortar el video, la Sección 7 (bucle principal) es la más larga de mostrar en vivo — está bien cortar a los primeros 2-3 disparos y saltar directo al mensaje final.
 - Antes de grabar, corré todo el notebook una vez de punta a punta (`Kernel → Restart & Run All` o equivalente) para confirmar que no hay errores y que `registros_jugadores.csv` va a tener al menos una fila para el leaderboard de la Sección 9.
-- Si el equipo también quiere mostrar el modo jugable (`juego_jugable/`, con pygame), es un buen cierre adicional: "además armamos una versión jugable de verdad, con clic del mouse y colisión por celda, como bonus fuera de lo pedido en el enunciado" — pero no es necesario para cumplir la consigna.
