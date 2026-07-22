@@ -10,8 +10,8 @@ Todo el proyecto vive en un único notebook: **[`DuckHunt_Simulacion.ipynb`](./D
 
 ## ¿Qué hace?
 
-- Configuración de partida por teclado: `input()` pide nombre, número de disparos (5-100) y tamaño de grid (3-100) (`NUM_DISPAROS`/`TAM_GRID` se convierten con `int()`), y `validar_configuracion()` avisa con un mensaje claro si algún valor no es válido — tal como pide el enunciado ("El valor de n debe ser configurable").
-- Tablero dividido dinámicamente en una cuadrícula `n x n`. El enunciado pide mostrar el fondo en blanco/negro o escala de grises, así que **todo el proyecto usa únicamente escala de grises** (fórmula de luminosidad calculada a mano con NumPy) — no se muestra ni se juega en color.
+- Configuración de partida por teclado: `input()` pide nombre, número de disparos (5-100) y tamaño de grid (3-100) (`NUM_DISPAROS`/`TAM_GRID` se convierten con `int()`), y `validar_configuracion()` avisa con un mensaje claro si algún valor no es válido. El número de disparos no viene fijo en 20: se puede cambiar en cada partida.
+- Tablero dividido dinámicamente en una cuadrícula `n x n`, mostrado en escala de grises (fórmula de luminosidad calculada a mano con NumPy) — no se muestra ni se juega en color.
 - `pato()`: aparece en una celda aleatoria (NumPy) y se dibuja con `ax.imshow(sprite, extent=[...])` — Matplotlib compone la transparencia del PNG automáticamente, así que no hace falta mezclar píxeles a mano. El sprite necesita **chroma-key** porque `pato.png` no trae transparencia real (tiene un fondo celeste sólido "horneado" en el archivo); ese chroma-key se aplicó una sola vez, de antemano (ver "Notas de diseño" abajo).
 - `pistola()`: dispara a una celda aleatoria y marca la celda con un `Rectangle` (borde) + un marcador `"x"` de Matplotlib, en vez de calcular una mira a mano.
 - Validación de impacto: si pato y disparo coinciden → se muestra `ganador.jpeg` (el perro con el pato); si no → `gameover.jpg` (el perro burlándose). Sin texto superpuesto — la imagen ya comunica el resultado.

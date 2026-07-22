@@ -52,7 +52,7 @@ Todo el proyecto vive en un solo notebook, `DuckHunt_Simulacion.ipynb`, dividido
 
 # DEFINICIÓN DEL PROBLEMA CENTRAL
 
-El enunciado del profesor Rojas Malasquez pide construir una aplicación que aplique programación estructurada, funciones, manejo de matrices e imágenes, números aleatorios y estadística básica. En concreto exige:
+El curso pide construir una aplicación que aplique programación estructurada, funciones, manejo de matrices e imágenes, números aleatorios y estadística básica. En concreto, el proyecto tenía que cumplir con:
 
 - Un fondo dividido en una cuadrícula `n×n`, mostrado en blanco y negro o escala de grises.
 - Una función `pato()` que elija una celda al azar (con NumPy) y dibuje el pato ahí.
@@ -82,7 +82,7 @@ El problema no es solo armar un juego que funcione, sino demostrar el manejo de 
 
 ## El fondo y la cuadrícula
 
-El enunciado pide mostrar el fondo en blanco y negro o en escala de grises, así que decidimos usar solo escala de grises en todo el proyecto: no hay ninguna versión a color del tablero mientras se juega. La conversión se hace con la fórmula de luminosidad de siempre,
+El fondo se puede mostrar en blanco y negro o en escala de grises; decidimos usar solo escala de grises en todo el proyecto, sin ninguna versión a color del tablero mientras se juega. La conversión se hace con la fórmula de luminosidad de siempre,
 
 ```
 gris = 0.299·R + 0.587·G + 0.114·B
@@ -116,7 +116,7 @@ El juego siempre completa los `N` disparos configurados; no se corta en el prime
 
 Con la lista de resultados armamos una tabla de pandas y calculamos el resumen (total, aciertos, fallos, porcentajes). Ese resumen se guarda además en un CSV que se va acumulando entre partidas —cada vez que alguien corre el notebook, se agrega una fila nueva sin borrar las anteriores.
 
-Para el cierre generamos los 4 gráficos que pide el enunciado. Jugamos una partida de ejemplo con la configuración por defecto (grid `4×4`, 20 disparos) y el resultado fue **2 aciertos de 20 (10%)**. Tiene sentido: con 16 celdas y una posición de disparo totalmente independiente de la del pato, la probabilidad de acertar cada disparo por azar es de `1/16`, más o menos 6.25%, así que sobre 20 intentos lo esperable es acertar 1 o 2 veces. El juego, en el fondo, no mide puntería —mide qué tan seguido coinciden dos números aleatorios— y cada partida termina siendo un experimento de probabilidad con pocas repeticiones.
+Para el cierre generamos los 4 gráficos estadísticos que forman parte de la consigna. Jugamos una partida de ejemplo con la configuración por defecto (grid `4×4`, 20 disparos) y el resultado fue **2 aciertos de 20 (10%)**. Tiene sentido: con 16 celdas y una posición de disparo totalmente independiente de la del pato, la probabilidad de acertar cada disparo por azar es de `1/16`, más o menos 6.25%, así que sobre 20 intentos lo esperable es acertar 1 o 2 veces. El juego, en el fondo, no mide puntería —mide qué tan seguido coinciden dos números aleatorios— y cada partida termina siendo un experimento de probabilidad con pocas repeticiones.
 
 ![Gráficos de la partida de ejemplo](docs/graficos_estadisticos.png)
 
@@ -134,7 +134,7 @@ Varias partes del proyecto pasaron por más de una versión antes de quedar como
 
 **Transparencia del pato.** Como se explicó arriba, el sprite no tenía canal alfa real. La alternativa habría sido detectar y quitar el fondo celeste en cada ejecución del notebook (chroma-key en vivo); en cambio se hizo una sola vez y se guardó el resultado como un archivo aparte, para no meter esa lógica en el código que se explica en clase.
 
-**Cómo mostrar el fondo.** Al principio mostrábamos el tablero en tres versiones — color, escala de grises y blanco/negro — una al lado de la otra. El enunciado solo pide blanco/negro *o* escala de grises, así que tener las tres no sumaba nada al juego, solo código de más. Nos quedamos con escala de grises únicamente.
+**Cómo mostrar el fondo.** Al principio mostrábamos el tablero en tres versiones — color, escala de grises y blanco/negro — una al lado de la otra. Pero solo hacía falta blanco/negro *o* escala de grises, no las tres a la vez, así que tener las tres no sumaba nada al juego, solo código de más. Nos quedamos con escala de grises únicamente.
 
 **Los gráficos finales, con o sin fondo.** Probamos dibujar el panel de 4 gráficos directamente sobre la imagen de `gameover.jpg`, con "GAME OVER" como título, para que el cierre de la partida y las estadísticas quedaran en una sola pantalla. De lejos se veía bien, pero de cerca los gráficos —sobre todo el heatmap, que tiene texto en cada celda— se volvían difíciles de leer con la foto de fondo compitiendo por la atención. Terminamos sacando la foto y dejando el título "GAME OVER" en texto plano, con los gráficos sobre fondo blanco debajo.
 
@@ -144,9 +144,9 @@ Varias partes del proyecto pasaron por más de una versión antes de quedar como
 
 # RECOMENDACIÓN FINAL
 
-La versión final del notebook resuelve el caso con lo mínimo necesario para cumplir el enunciado, sin agregar cosas que compliquen la explicación en la exposición: escala de grises únicamente, configuración por `input()`, `pato()`/`pistola()` apoyándose en lo que Matplotlib ya resuelve solo (transparencia automática, formas geométricas listas), y estadísticas con los 4 tipos de gráfico que pide el curso, sin depender de una imagen de fondo que compita con los datos.
+La versión final del notebook resuelve el caso con lo mínimo necesario para cumplir con la consigna, sin agregar cosas que compliquen la explicación en la exposición: escala de grises únicamente, configuración por `input()`, `pato()`/`pistola()` apoyándose en lo que Matplotlib ya resuelve solo (transparencia automática, formas geométricas listas), y estadísticas con los 4 tipos de gráfico que pide el curso, sin depender de una imagen de fondo que compita con los datos.
 
-Esa combinación es la que mejor equilibra dos cosas que el enunciado pide a la vez: cumplir con el uso de las librerías obligatorias, y mantener "calidad del código" y "buenas prácticas" — que también son parte de la nota.
+Esa combinación es la que mejor equilibra dos cosas a la vez: cumplir con el uso de las librerías obligatorias, y mantener "calidad del código" y "buenas prácticas" — que también son parte de la nota.
 
 # PLAN DE IMPLEMENTACIÓN
 
