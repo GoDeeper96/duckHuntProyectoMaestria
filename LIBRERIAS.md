@@ -44,9 +44,10 @@ Matplotlib es la librería de dibujo de todo el proyecto: el tablero, el pato, l
 - **El tablero y el grid** (`dibujar_tablero`, `dibujar_tablero_para_ronda`): `ax.imshow(imagen, cmap="gray")` muestra la matriz de píxeles como imagen, y `ax.axhline`/`ax.axvline` dibujan las líneas rojas de la cuadrícula encima.
 - **El pato** (`pato()`): `ax.imshow(sprite, extent=[...])` dibuja el sprite del pato como una capa sobre el tablero ya dibujado. Matplotlib compone la transparencia del PNG automáticamente al renderizar, así que no hace falta mezclar los colores a mano.
 - **La mira** (`pistola()`): `Rectangle` (de `matplotlib.patches`) dibuja el borde de la celda de impacto, y `ax.plot(..., marker="x")` dibuja la marca en el centro — piezas ya construidas de la librería, en vez de calcular la geometría a mano.
-- **Las pantallas WINNER / GAME OVER** (`mostrar_pantalla_reaccion`, `mostrar_pantalla_final`): `ax.text(...)` dibuja el texto grande centrado, con `path_effects.Stroke` para el contorno negro que lo hace legible sobre cualquier fondo.
+- **Las pantallas de reacción** (`mostrar_pantalla_reaccion`): muestra `ganador.jpeg` o `gameover.jpg` a pantalla completa, sin texto — la imagen del perro ya comunica el resultado.
+- **La pantalla final** (`mostrar_pantalla_final`, `dibujar_panel_con_fondo`): `ax.text(...)` dibuja el resumen de la partida sobre `gameover.jpg`, con `path_effects.Stroke` para el contorno negro que lo hace legible sobre la foto. El panel de gráficos de la Sección 9 usa el mismo truco: un eje que ocupa toda la figura muestra la imagen de fondo, y los 4 gráficos se dibujan encima con `ax.set_facecolor((1, 1, 1, 0.88))` — un fondo blanco *semi-transparente* (RGBA) que deja ver la foto detrás sin perder legibilidad.
 
-**Por qué esta y no otra:** es la librería de visualización estándar de Python y la única capaz de mostrar tanto imágenes (`imshow`) como formas vectoriales (`Rectangle`, `plot`, `text`) en el mismo lienzo, que es exactamente lo que necesita el proyecto: superponer sprites, líneas y texto sobre una imagen de fondo.
+**Por qué esta y no otra:** es la librería de visualización estándar de Python y la única capaz de mostrar tanto imágenes (`imshow`) como formas vectoriales (`Rectangle`, `plot`, `text`) en el mismo lienzo, que es exactamente lo que necesita el proyecto: superponer sprites, líneas, gráficos y texto sobre una imagen de fondo.
 
 ---
 
@@ -59,7 +60,7 @@ Seaborn se usa exclusivamente en la Sección 9, para los gráficos de cierre del
 - **Gráfico de barras** (`graficar_barras_resultado`): `sns.barplot(...)` compara la cantidad de aciertos contra fallos.
 - **Pie chart** (`graficar_pie_resultado`): en este caso usamos `ax.pie` de Matplotlib directamente, porque Seaborn no tiene una función de pie chart propia — es un ejemplo real de cuándo conviene usar cada librería según lo que hace falta, no usar una por usarla.
 - **Heatmap** (`graficar_heatmap_resultado`): `sns.heatmap(total, annot=etiquetas, cmap="Reds")` colorea cada celda del grid según cuántos disparos cayeron ahí, con una etiqueta de texto tipo `"1A / 2F"` (aciertos/fallos) superpuesta en cada casilla — hacer esto mismo a mano con Matplotlib puro pediría mucho más código (normalizar colores, dibujar cada celda, poner cada etiqueta).
-- **Histograma** (`graficar_histograma_filas`): `sns.histplot(df_partida["pato_fila"], bins=..., discrete=True)` cuenta en cuántos disparos el pato apareció en cada fila del grid — una línea, en vez de armar el conteo y las barras a mano.
+- **Histograma** (`graficar_histograma_resultado`): `sns.histplot(data=df, x="disparo_fila", hue="Resultado", multiple="stack", ...)` cuenta cuántos disparos cayeron en cada fila, apilando aciertos y fallos con un color distinto cada uno — la misma idea que el heatmap, pero en una sola dimensión.
 - **Leaderboard** (`mostrar_leaderboard`): otro `sns.barplot`, esta vez comparando el % de aciertos de todas las partidas guardadas en el CSV histórico.
 
 **Por qué esta y no otra:** el enunciado la pide explícitamente para "elaboración de gráficos estadísticos finales", y en la práctica ahorra código real en el heatmap y en las barras en comparación con hacerlo todo con Matplotlib puro.

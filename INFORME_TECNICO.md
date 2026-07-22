@@ -45,7 +45,7 @@ El notebook está dividido en 9 secciones, cada una con su propia celda de expli
 | 3. Carga y preprocesamiento del fondo | Carga la imagen de fondo y la convierte a escala de grises; construye la cuadrícula. |
 | 4. Función `pato()` | Elige una celda al azar y dibuja el sprite del pato ahí. |
 | 5. Función `pistola()` | Elige una celda de impacto al azar y dibuja una mira. |
-| 6. Validación de impacto | Compara la posición del pato con la del disparo; muestra WINNER o GAME OVER. |
+| 6. Validación de impacto | Compara la posición del pato con la del disparo; muestra la imagen de acierto o de fallo. |
 | 7. Bucle principal | Repite el ciclo completo tantas veces como disparos se configuraron. |
 | 8. Resultados y CSV | Arma la tabla de la partida, calcula el resumen, lo guarda en un historial. |
 | 9. Visualización estadística | Genera los gráficos finales y compara contra el historial de partidas. |
@@ -72,11 +72,11 @@ Un detalle del proceso vale la pena mencionar: el sprite original del pato (`pat
 
 ### 3.3 Validación de impacto
 
-`procesar_disparo()` compara la posición del pato contra la del disparo — en Python, comparar dos tuplas con `==` ya compara cada elemento automáticamente — y arma un registro con el resultado. Si coinciden se muestra la pantalla `ganador.jpeg` con el texto **WINNER**; si no, `gameover.jpg` con **GAME OVER**.
+`procesar_disparo()` compara la posición del pato contra la del disparo — en Python, comparar dos tuplas con `==` ya compara cada elemento automáticamente — y arma un registro con el resultado. Si coinciden se muestra `ganador.jpeg` (el perro con el pato); si no, `gameover.jpg` (el perro burlándose). Ninguna de las dos lleva texto superpuesto — la imagen ya comunica el resultado por sí sola.
 
-![Pantalla WINNER](docs/pantalla_winner.png){width=60%}
+![Pantalla al acertar](docs/pantalla_winner.png){width=60%}
 
-![Pantalla GAME OVER](docs/pantalla_gameover.png){width=60%}
+![Pantalla al fallar](docs/pantalla_gameover.png){width=60%}
 
 ### 3.4 El bucle principal
 
@@ -96,7 +96,7 @@ Repasando contra el enunciado original, punto por punto:
 - [x] Cuadrícula generada dinámicamente (`3×3`, `4×4`, `5×5`, o cualquier `n×n` entre 3 y 100) usando estructuras matriciales.
 - [x] Función `pato()`: posición aleatoria con NumPy, dibujo del sprite.
 - [x] Función `pistola()`: posición de impacto aleatoria con NumPy, mira dibujada.
-- [x] Validación de impacto: imagen de acierto (WINNER) y de fallo (GAME OVER), con registro de cada resultado.
+- [x] Validación de impacto: imagen de acierto (`ganador.jpeg`) y de fallo (`gameover.jpg`), sin texto superpuesto, con registro de cada resultado.
 - [x] Sistema de disparos configurable (`n = 20` por defecto, ajustable desde el teclado entre 5 y 100).
 - [x] Pantalla final con estadísticas: total, exitosos, errados, % de aciertos, % de fallos.
 - [x] Visualización estadística con tablas y los 4 gráficos de ejemplo (barras, histograma, pie chart, heatmap), usando pandas, Matplotlib y Seaborn.
@@ -117,16 +117,18 @@ Como resumen rápido:
 
 ## 6. Análisis estadístico de resultados
 
-Para este informe se jugó una partida de ejemplo con la configuración por defecto: grid `4×4` y `20` disparos. El resultado fue **3 aciertos de 20 disparos (15%)** — un resultado bajo, pero esperable: con 16 celdas posibles y una posición de disparo totalmente independiente de la del pato, la probabilidad de acertar cada disparo por puro azar es `1/16`, aproximadamente 6.25%, así que sobre 20 intentos lo más probable estadísticamente es acertar entre 1 y 2 veces (3 está apenas por encima de lo esperado, dentro de lo normal para una muestra tan chica). Esto es, en sí mismo, una observación interesante del proyecto: como ambas posiciones son aleatorias e independientes, el juego no mide puntería sino que ilustra un experimento de probabilidad — cada partida es, en el fondo, una simulación de Monte Carlo con muy pocas repeticiones.
+Para este informe se jugó una partida de ejemplo con la configuración por defecto: grid `4×4` y `20` disparos. El resultado fue **2 aciertos de 20 disparos (10%)** — un resultado bajo, pero esperable: con 16 celdas posibles y una posición de disparo totalmente independiente de la del pato, la probabilidad de acertar cada disparo por puro azar es `1/16`, aproximadamente 6.25%, así que sobre 20 intentos lo más probable estadísticamente es acertar entre 1 y 2 veces. Esto es, en sí mismo, una observación interesante del proyecto: como ambas posiciones son aleatorias e independientes, el juego no mide puntería sino que ilustra un experimento de probabilidad — cada partida es, en el fondo, una simulación de Monte Carlo con muy pocas repeticiones.
 
-![Gráfico de barras, pie chart, heatmap e histograma de la partida de ejemplo](docs/graficos_estadisticos.png)
+Los 4 gráficos se dibujan **sobre el fondo de `gameover.jpg`**, con "GAME OVER" como título grande arriba — así el cierre de la partida y el resumen estadístico quedan en una sola pantalla, en vez de una figura suelta con fondo blanco. Cada gráfico individual tiene su propio fondo blanco semi-transparente (`ax.set_facecolor((1, 1, 1, 0.88))`) para seguir siendo legible sin tapar del todo la imagen de atrás.
+
+![Gráfico de barras, pie chart, heatmap e histograma sobre el fondo de GAME OVER](docs/graficos_estadisticos.png)
 
 Los 4 gráficos, en el orden en que aparecen:
 
 - **Gráfico de barras** (arriba, izquierda): cantidad de aciertos vs. fallos, con el eje vertical forzado a números enteros — no tiene sentido mostrar "2.5 disparos", así que se usa `MaxNLocator(integer=True)` de Matplotlib en vez de dejar que el eje se autoescale con decimales.
 - **Pie chart** (arriba, derecha): la misma comparación de aciertos/fallos, en proporción.
-- **Heatmap** (abajo, izquierda): por cada celda del grid, cuántos disparos cayeron ahí y si fueron acierto o fallo (anotado como `"A / F"` en cada celda, con el color representando el total de disparos en esa celda). Se cambió respecto a una versión anterior que solo mostraba dónde aparecía el pato — mostrar el **resultado** del disparo por celda es más relevante para analizar la partida que solo la aleatoriedad de `pato()`.
-- **Histograma** (abajo, derecha): en qué fila del grid apareció el pato con más frecuencia. Con más partidas jugadas, esta distribución debería acercarse a ser uniforme entre las filas, porque `pato()` elige la posición con `np.random.randint`, que da la misma probabilidad a cada celda.
+- **Heatmap** (abajo, izquierda): por cada celda del grid, cuántos disparos cayeron ahí y si fueron acierto o fallo (anotado como `"A / F"` en cada celda, con el color representando el total de disparos en esa celda). Muestra el **resultado** del disparo por celda, que es más relevante para analizar la partida que solo la aleatoriedad de `pato()`.
+- **Histograma** (abajo, derecha): la misma idea que el heatmap, pero en una sola dimensión — cuántos disparos cayeron en cada fila, separados en aciertos y fallos con barras apiladas de distinto color.
 
 Como la partida quedó guardada en el CSV histórico, la Sección 9 también arma un **leaderboard** comparando todas las partidas jugadas hasta el momento, ordenadas por porcentaje de aciertos — pensado para cuando distintos integrantes del equipo (o distintos compañeros del curso) prueben el notebook varias veces.
 
@@ -138,7 +140,7 @@ Algunas decisiones no son obvias mirando solo el código final, así que vale la
 
 - **Solo escala de grises, no color ni blanco/negro simultáneos**: el enunciado pide mostrar el fondo en blanco/negro *o* escala de grises; el equipo optó por escala de grises únicamente, en todo el proyecto, para no complicar el código con versiones que no aportan a la lógica del juego.
 - **`pato()` y `pistola()` simplificadas con `imshow(extent=...)`**: una versión anterior mezclaba los píxeles del sprite a mano con una fórmula de composición alfa; se simplificó dejando que Matplotlib haga esa composición automáticamente, que es lo que la librería ya hace bien.
-- **Sin splash de sangre ni sonido**: se consideraron en una etapa intermedia del desarrollo, pero se descartaron para mantener la lógica de validación de impacto simple y fácil de explicar — las pantallas WINNER/GAME OVER ya cumplen esa función.
+- **Sin splash de sangre ni sonido, y sin texto sobre las imágenes de reacción**: se consideraron en una etapa intermedia del desarrollo, pero se descartaron para mantener la lógica de validación de impacto simple y fácil de explicar — las imágenes de `ganador.jpeg` y `gameover.jpg` ya comunican el resultado por sí solas, sin necesitar texto ni sonido superpuesto.
 - **Configuración por teclado, no por una pantalla interactiva de botones**: se probó una pantalla de configuración estilo consola retro con botones (`ipywidgets`), pero depende de que el entorno donde corre el notebook tenga el renderizador de widgets bien configurado. `input()` es una función estándar de Python que funciona igual en cualquier notebook, así que fue la opción más confiable para algo tan central como la configuración inicial.
 - **El grid puede llegar hasta 100, no se detiene en 8**: no hay ninguna razón técnica para limitar el tamaño del tablero. `pato()` calcula el tamaño del sprite en función del tamaño de la celda (`extent_celda()`, Sección 4), así que el pato nunca se sale de su celda sin importar qué tan chica sea — la única restricción real es que el pato no puede ser más grande que la celda que lo contiene, y eso ya lo garantiza ese cálculo. Un grid más fino simula una cadena de disparos más realista (probabilidad de acierto más baja, más parecida a apuntar con precisión de verdad).
 

@@ -98,11 +98,11 @@ Duración aproximada si lo leés a ritmo normal: **8-10 minutos**.
 >
 > `procesar_disparo()` hace esa validación y arma un diccionario con los datos del disparo: en qué celda apareció el pato, en qué celda cayó el disparo, y si hubo acierto o no. Ese diccionario es lo que después se junta en una tabla para las estadísticas.
 >
-> Si hay coincidencia, se muestra la pantalla `ganador.jpeg` con el texto WINNER en verde; si no, se muestra `gameover.jpg` con el texto GAME OVER en rojo. El texto se dibuja con un contorno negro alrededor, para que se lea bien sobre cualquier fondo de la imagen."
+> Si hay coincidencia, se muestra la imagen `ganador.jpeg`, el perro con el pato; si no, `gameover.jpg`, el perro burlándose. Ninguna de las dos lleva texto superpuesto — la imagen ya comunica el resultado por sí sola."
 
-[Ejecutar la celda, mostrar primero la pantalla WINNER forzada, después la pantalla GAME OVER forzada]
+[Ejecutar la celda, mostrar primero la imagen de acierto forzada, después la de fallo forzada]
 
-> "Estas dos pruebas fuerzan un acierto y un fallo a propósito, para mostrar las dos pantallas de reacción sin depender del azar."
+> "Estas dos pruebas fuerzan un acierto y un fallo a propósito, para mostrar las dos imágenes de reacción sin depender del azar."
 
 ---
 
@@ -138,7 +138,7 @@ Duración aproximada si lo leés a ritmo normal: **8-10 minutos**.
 
 [Mostrar la celda markdown de la Sección 9]
 
-> "Para cerrar, generamos los 4 gráficos de ejemplo del enunciado usando pandas, Matplotlib y Seaborn: un gráfico de barras comparando aciertos contra fallos, con el eje en números enteros; un pie chart con la proporción de aciertos; un heatmap mostrando, celda por celda, cuántos disparos fueron acierto y cuántos fallo; y un histograma con en qué fila del grid apareció el pato con más frecuencia."
+> "Para cerrar, generamos los 4 gráficos de ejemplo del enunciado usando pandas, Matplotlib y Seaborn: un gráfico de barras comparando aciertos contra fallos, con el eje en números enteros; un pie chart con la proporción de aciertos; un heatmap mostrando, celda por celda, cuántos disparos fueron acierto y cuántos fallo; y un histograma con esa misma comparación pero por fila de disparo. Los cuatro se dibujan sobre el fondo de gameover.jpg, con 'GAME OVER' como título grande arriba — así el cierre de la partida y el resumen estadístico quedan en una sola pantalla."
 
 [Ejecutar la celda, mostrar el panel de 3 gráficos]
 
