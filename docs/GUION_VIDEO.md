@@ -50,13 +50,11 @@ Duración aproximada si lo leés a ritmo normal: **8-10 minutos**.
 
 > "Una imagen a color es una matriz de tres dimensiones: alto, ancho, y tres canales de color, rojo, verde y azul. Para convertirla a escala de grises usamos la fórmula de luminosidad, que le da más peso al verde porque el ojo humano es más sensible a ese color: 0.299 por rojo, más 0.587 por verde, más 0.114 por azul. Con NumPy esto se calcula para toda la imagen de una sola vez, sin recorrer píxel por píxel con un bucle.
 >
-> Después, para blanco y negro, aplicamos un umbral: si el valor de gris es mayor o igual a 128, el píxel se pinta blanco; si no, negro.
->
-> El enunciado pide mostrar el fondo en blanco y negro o escala de grises — no menciona color — así que el tablero donde realmente se juega usa la versión en grises. El color solo se muestra acá, como comparación."
+> El enunciado pide mostrar el fondo en blanco y negro o escala de grises, así que todo el proyecto trabaja únicamente en escala de grises — no se usa color en ningún lado del juego."
 
-[Ejecutar las celdas de funciones, y la celda de orquestación que muestra las 3 versiones lado a lado]
+[Ejecutar las celdas de funciones, y la celda de orquestación que muestra el fondo en escala de grises]
 
-> "Acá se ve el mismo fondo en las tres versiones: color, escala de grises, y blanco y negro, cada una dividida en la cuadrícula de 4 por 4 configurada antes. Los números amarillos son las coordenadas fila-columna de cada celda."
+> "Acá se ve el fondo ya convertido a escala de grises, dividido en la cuadrícula de 4 por 4 configurada antes. Los números amarillos son las coordenadas fila-columna de cada celda."
 
 ---
 
@@ -136,11 +134,9 @@ Duración aproximada si lo leés a ritmo normal: **8-10 minutos**.
 
 [Mostrar la celda markdown de la Sección 9]
 
-> "Para cerrar, generamos los cuatro gráficos que pide el enunciado usando pandas, Matplotlib y Seaborn: un gráfico de barras comparando aciertos contra fallos, un histograma con la distancia entre el pato y el disparo en cada intento — para medir qué tan lejos se falló, no solo si se falló —, un pie chart con la proporción de aciertos, y un heatmap mostrando en qué celdas del grid apareció el pato con más frecuencia.
->
-> La distancia se calcula con la fórmula de distancia euclidiana entre dos puntos, aplicada a las coordenadas de fila y columna."
+> "Para cerrar, generamos gráficos estadísticos usando pandas, Matplotlib y Seaborn: un gráfico de barras comparando aciertos contra fallos, un pie chart con la proporción de aciertos, y un heatmap mostrando en qué celdas del grid apareció el pato con más frecuencia — reutilizando la misma matriz de conteo por celda que ya usamos para el grid."
 
-[Ejecutar la celda, mostrar el panel de 4 gráficos]
+[Ejecutar la celda, mostrar el panel de 3 gráficos]
 
 > "Y para terminar, un leaderboard: la tabla de todas las partidas guardadas en el CSV histórico, ordenadas por porcentaje de aciertos, con un gráfico de barras comparando a todos los jugadores que hayan probado el notebook."
 

@@ -8,19 +8,19 @@ Hay dos entregables independientes:
 2. **[`juego_jugable/`](./juego_jugable/)** — un extra: la misma idea, pero jugable de verdad con pygame (el jugador hace clic para disparar, con temporizador).
 
 <p align="center">
-  <img src="docs/tablero_grid.png" width="720" alt="Tablero dividido en grid: color, escala de grises y blanco/negro">
+  <img src="docs/tablero_grid.png" width="720" alt="Tablero en escala de grises dividido en grid">
 </p>
 
 ## 1. El notebook (entregable principal)
 
 - Configuración de partida con **3 variables simples** (`NOMBRE_JUGADOR`, `NUM_DISPAROS`, `TAM_GRID`) al principio del notebook, con una función de validación que avisa con un mensaje claro si algún valor no es válido — tal como pide el enunciado ("El valor de n debe ser configurable desde el código").
-- Tablero dividido dinámicamente en una cuadrícula `n x n`. El enunciado pide mostrar el fondo en blanco/negro o escala de grises (no menciona color), así que **el tablero donde realmente se juega usa la versión en grises** (fórmula de luminosidad calculada a mano con NumPy); el color solo aparece como comparación en la Sección 3.
-- `pato()`: aparece en una celda aleatoria (NumPy) y se dibuja con `ax.imshow(sprite, extent=[...])` — Matplotlib compone la transparencia del PNG automáticamente, así que no hace falta mezclar píxeles a mano. El sprite sigue necesitando **chroma-key** porque `pato.png` no trae transparencia real (tiene un fondo celeste sólido "horneado" en el archivo).
+- Tablero dividido dinámicamente en una cuadrícula `n x n`. El enunciado pide mostrar el fondo en blanco/negro o escala de grises, así que **todo el proyecto usa únicamente escala de grises** (fórmula de luminosidad calculada a mano con NumPy) — no se muestra ni se juega en color.
+- `pato()`: aparece en una celda aleatoria (NumPy) y se dibuja con `ax.imshow(sprite, extent=[...])` — Matplotlib compone la transparencia del PNG automáticamente, así que no hace falta mezclar píxeles a mano. El sprite necesita **chroma-key** porque `pato.png` no trae transparencia real (tiene un fondo celeste sólido "horneado" en el archivo); ese chroma-key se aplicó una sola vez, de antemano (ver "Notas de diseño" abajo).
 - `pistola()`: dispara a una celda aleatoria y marca la celda con un `Rectangle` (borde) + un marcador `"x"` de Matplotlib, en vez de calcular una mira a mano.
-- Validación de impacto: si pato y disparo coinciden → splash de sangre + pantalla **WINNER**; si no → pantalla **GAME OVER**.
-- Bucle principal: juega los `N` disparos configurados completos (no se corta en el primer fallo); cada ronda dibuja un solo tablero con el pato, la mira y (si hubo acierto) el splash juntos.
+- Validación de impacto: si pato y disparo coinciden → pantalla **WINNER**; si no → pantalla **GAME OVER**.
+- Bucle principal: juega los `N` disparos configurados completos (no se corta en el primer fallo); cada ronda dibuja un solo tablero con el pato y la mira juntos.
 - Pantalla final con el resumen de la partida, y registro en un **CSV histórico** (`registros_jugadores.csv`) que acumula todas las partidas de todos los jugadores.
-- Estadísticas finales con pandas + Matplotlib + Seaborn: gráfico de barras, histograma, pie chart, heatmap de posiciones del pato, y un *leaderboard* comparando jugadores.
+- Estadísticas finales con pandas + Matplotlib + Seaborn: gráfico de barras, pie chart, heatmap de posiciones del pato, y un *leaderboard* comparando jugadores.
 
 <p align="center">
   <img src="docs/pato_chromakey.png" width="720" alt="Pato y mira dibujados juntos sobre el tablero en escala de grises">
@@ -30,18 +30,18 @@ Hay dos entregables independientes:
   <img src="docs/pantalla_gameover.png" width="360" alt="Pantalla GAME OVER">
 </p>
 <p align="center">
-  <img src="docs/graficos_estadisticos.png" width="720" alt="Gráficos de barras, histograma, pie chart y heatmap">
+  <img src="docs/graficos_estadisticos.png" width="720" alt="Gráficos de barras, pie chart y heatmap">
 </p>
 
 ### Librerías usadas en el notebook
 
 | Librería | Para qué se usa aquí |
 |---|---|
-| **NumPy** | Posiciones aleatorias, matrices del tablero, conversión a grises/B-N, chroma-key, splash de sangre |
+| **NumPy** | Posiciones aleatorias, matrices del tablero, conversión a grises, geometría del grid |
 | **pandas** | Registro de cada disparo, resumen estadístico, CSV histórico, leaderboard |
 | **Matplotlib** | Dibujo del tablero, la mira, las pantallas de reacción y los gráficos |
-| **Seaborn** | Gráfico de barras, histograma y heatmap de la Sección 9 |
-| **Pillow (PIL)** | Carga, recorte y redimensionado de imágenes/sprites |
+| **Seaborn** | Gráfico de barras, pie chart y heatmap de la Sección 9 |
+| **Pillow (PIL)** | Carga de imágenes/sprites |
 
 ### Cómo ejecutar el notebook
 
@@ -57,10 +57,9 @@ jupyter notebook DuckHunt_Simulacion.ipynb
 
 ### Notas de diseño del notebook
 
-- **`pato (1).png` no tenía transparencia real** — tenía un fondo celeste sólido "horneado" en el archivo. Se detectó inspeccionando el canal alfa con NumPy y se resolvió con una función de *chroma-key*.
+- **`pato (1).png` no tenía transparencia real** — tenía un fondo celeste sólido "horneado" en el archivo. Se detectó inspeccionando el canal alfa con NumPy (`np.unique(arr[...,3])` daba solo `255`), y se resolvió con chroma-key aplicado **una sola vez, fuera del notebook**: `assets/pato_limpio.png` ya viene con el fondo quitado, así el código de `pato()` no necesita explicar ni ejecutar ese preprocesamiento cada vez.
 - **`pato()` y `pistola()` dibujan con `ax.imshow(imagen, extent=[...])`**: Matplotlib compone la transparencia de un PNG automáticamente al dibujarlo como una capa sobre los ejes, así que no hace falta escribir una fórmula de mezcla alfa a mano. `extent` define en qué rectángulo del tablero se dibuja la imagen, calculado para conservar la proporción original del sprite dentro de la celda.
-- El **splash de sangre** se genera por código (círculos con NumPy sobre una textura transparente), no es una imagen — mismo criterio de "manipulación de imágenes" con fórmulas explícitas en vez de una imagen fija.
-- Sin audio: se sacó del notebook para mantener `pato()`/`pistola()`/la validación de impacto simples y enfocadas. El modo jugable (`juego_jugable/`) sí lo conserva.
+- Sin audio ni splash de sangre: se sacaron del notebook para mantener `pato()`/`pistola()`/la validación de impacto simples y enfocadas en lo que pide el enunciado. El modo jugable (`juego_jugable/`) sí conserva el audio.
 
 ## 2. El modo jugable (`juego_jugable/`, extra)
 
